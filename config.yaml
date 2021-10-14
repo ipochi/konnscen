@@ -1,0 +1,4 @@
+concurrent_connections:
+  number_of_concurrent_users: 1
+  number_of_times: 1
+
