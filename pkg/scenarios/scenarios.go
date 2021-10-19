@@ -28,7 +28,7 @@ func Run(cfg *config.Config, sc []string) error {
 	for _, s := range sc {
 		err := scenariosMap[s].Run()
 		if err != nil {
-			return fmt.Errorf("running scenario")
+			return fmt.Errorf("running scenario %q: %w", s, err)
 		}
 	}
 

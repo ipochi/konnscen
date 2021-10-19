@@ -51,8 +51,6 @@ func (c *ConcurrentConnections) Run() error {
 	go func() {
 		wg.Wait()
 		wgDone <- true
-		close(wgDone)
-		close(errChan)
 	}()
 
 	isDone := false
@@ -64,6 +62,8 @@ func (c *ConcurrentConnections) Run() error {
 		select {
 		case <-wgDone:
 			isDone = true
+			close(wgDone)
+			close(errChan)
 		case err := <-errChan:
 			errCount++
 			fmt.Println(err)
@@ -84,17 +84,19 @@ func (c *ConcurrentConnections) getLogs(ctx context.Context, wg *sync.WaitGroup,
 
 	defer wg.Done()
 	for i := 0; i < c.NumberOfTimes; i++ {
-		time.Sleep(5 * time.Second)
+		randomSleep(15)
 		podLogOpts := corev1.PodLogOptions{}
 
 		// Get all the pods in the cluster.
 		pods, err := cs.CoreV1().Pods("").List(context.TODO(), metav1.ListOptions{})
 		if err != nil {
 			errChan <- fmt.Errorf("retreiving all pods in the cluster: %q", err)
+			continue
 		}
 
 		if len(pods.Items) == 0 {
 			errChan <- fmt.Errorf("No pods found in the cluster")
+			continue
 		}
 
 		index := getRandomIndex(len(pods.Items))
@@ -111,17 +113,27 @@ func (c *ConcurrentConnections) getLogs(ctx context.Context, wg *sync.WaitGroup,
 
 		if err != nil {
 			errChan <- fmt.Errorf("opening stream: %q", err)
+			continue
 		}
 
 		buf := new(bytes.Buffer)
 		_, err = io.Copy(buf, podLogs)
 		if err != nil {
 			errChan <- fmt.Errorf("copying information from podLogs to buf: %q", err)
+			continue
 		}
 		str := buf.String()
 		fmt.Println(str)
 		podLogs.Close()
 	}
+}
+
+func randomSleep(seconds int) {
+	rand.Seed(time.Now().UnixNano())
+	n := rand.Intn(seconds)
+	fmt.Printf("Sleeping %d seconds...\n", n)
+	time.Sleep(time.Duration(n) * time.Second)
+	fmt.Println("Done")
 }
 
 func getRandomIndex(max int) int {
