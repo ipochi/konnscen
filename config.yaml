@@ -1,4 +1,7 @@
 concurrent_connections:
   number_of_concurrent_users: 1
   number_of_times: 1
-
+concurrent_portforwards:
+  number_of_concurrent_portforwards: 10
+  start_port: 4000
+  keep_connected_for_seconds: 60

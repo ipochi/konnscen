@@ -6,16 +6,19 @@ import (
 	"os"
 
 	concon "github.com/ipochi/konnscen/pkg/scenarios/concurrent-connections"
+	conportforwards "github.com/ipochi/konnscen/pkg/scenarios/concurrent-portforwards"
 	"gopkg.in/yaml.v3"
 )
 
 type Config struct {
-	ConcurrentConnections *concon.ConcurrentConnections `yaml:"concurrent_connections,omitempty"`
+	ConcurrentConnections  *concon.ConcurrentConnections           `yaml:"concurrent_connections,omitempty"`
+	ConcurrentPortForwards *conportforwards.ConcurrentPortForwards `yaml:"concurrent_portforwards,omitempty"`
 }
 
 func NewConfig() *Config {
 	return &Config{
-		ConcurrentConnections: concon.NewConcurrentConnections(),
+		ConcurrentConnections:  concon.NewConcurrentConnections(),
+		ConcurrentPortForwards: conportforwards.NewConcurrentPortForwards(),
 	}
 }
 

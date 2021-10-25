@@ -2,6 +2,7 @@ package cmd
 
 import (
 	concon "github.com/ipochi/konnscen/pkg/scenarios/concurrent-connections"
+	conportforwards "github.com/ipochi/konnscen/pkg/scenarios/concurrent-portforwards"
 	"github.com/spf13/cobra"
 )
 
@@ -14,6 +15,7 @@ var scenariosCmd = &cobra.Command{
 func AvailableScenarios() map[string]string {
 	s := map[string]string{}
 	s[concon.Name] = concon.Name
+	s[conportforwards.Name] = conportforwards.Name
 
 	return s
 }
