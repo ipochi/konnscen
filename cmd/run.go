@@ -34,7 +34,9 @@ func runScenario(cmd *cobra.Command, args []string) {
 	}
 
 	cfg = config.LoadConfig(configFile)
-	scenarios.Run(cfg, args)
+	if err := scenarios.Run(cfg, args); err != nil {
+		log.Fatal(err)
+	}
 }
 
 func validateArgs(args []string) error {
